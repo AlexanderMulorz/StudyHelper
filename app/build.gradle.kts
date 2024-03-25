@@ -44,7 +44,6 @@ android {
         }
 
 
-        // Get the API keys from local.properties
 
     }
 
@@ -59,6 +58,8 @@ android {
             buildConfigField("String", "GPT_API_KEY", GPT_API_KEY)
         }
         release {
+            buildConfigField("String", "GPT_API_KEY", GPT_API_KEY)
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -19,21 +19,11 @@ class GPTAPIHandler {
 
     private val client = OkHttpClient()
 
-    private fun getResponse(question: String, callback: (String) -> Unit){
+    private fun getResponse(requestBody: String, callback: (String) -> Unit){
         val apiKey = BuildConfig.GPT_API_KEY
         val url = "https://api.openai.com/v1/chat/completions"
 
-        val requestBody="""
-            {
-            "model": "gpt-3.5-turbo",
-            "messages": [
-                 {
-                   "role": "user",
-                   "content": "summarize this: $question" 
-                 }],
-            "temperature": 0.8
-            }
-        """.trimIndent()
+
 
         val request = Request.Builder()
             .url(url)
@@ -63,11 +53,21 @@ class GPTAPIHandler {
     }
     fun summarizeText(transcript: String, callback: (String) -> Unit){
         val tokenlenght = countToken(transcript)
-        val request = "Tell me a joke"//
-        val apiKey = "BuildConfig.GPT_API_KEY"
+
+        val requestBody="""
+            {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                 {
+                   "role": "user",
+                   "content": "summarize this: $transcript" 
+                 }],
+            "temperature": 0.8
+            }
+        """.trimIndent()
 
 
-        getResponse(transcript){ response ->
+        getResponse(requestBody){ response ->
             val jsonObject= JSONObject(response)
             val jsonArray: JSONArray =jsonObject.getJSONArray("choices")
             val textMessage=jsonArray.getJSONObject(0).getJSONObject("message")
@@ -75,6 +75,32 @@ class GPTAPIHandler {
             val summary = text_Result.toString()
             callback(summary)
         }
+    }
+
+    fun getQuestion(transcript: String, callback: (String) -> Unit){
+        val requestBody="""
+            {
+            "model": "gpt-3.5-turbo",
+            "response_format" : { "type": "json_object" },
+            "messages": [
+
+
+                 {
+                   "role": "user",
+                   "content": "Return a JSON Object property called question_list, where you store 3 JSON Objects, each containing a question, one correct answer and three false answers about this text: $transcript" 
+                 }]
+            }
+        """.trimIndent()
+
+        getResponse(requestBody){ response ->
+            val jsonObject= JSONObject(response)
+            val jsonArray: JSONArray =jsonObject.getJSONArray("choices")
+            val textMessage=jsonArray.getJSONObject(0).getJSONObject("message")
+            val text_Result=textMessage.getString("content")
+            val summary = text_Result.toString()
+            callback(summary)
+        }
+
     }
 
     fun countToken(text: String): Int {

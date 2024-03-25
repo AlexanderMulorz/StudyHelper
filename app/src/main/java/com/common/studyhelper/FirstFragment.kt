@@ -43,8 +43,9 @@ class FirstFragment : Fragment() {
 
         binding.textViewSummary.movementMethod = ScrollingMovementMethod();
         binding.summarizeButton.setOnClickListener {
-            val apiKey = "BuildConfig.GPT_API_KEY"
+
             var transcript = ""
+
             val link = binding.editTextLink.text
             try {
                 transcript = youTubeTranscriptApi.callAttr("gettranscript",
@@ -54,6 +55,10 @@ class FirstFragment : Fragment() {
                 Toast.makeText(this.requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
 
+
+            val activity = context as MainActivity
+            activity.setTranscript(transcript)
+
             val gptapihandler = GPTAPIHandler()
 
 
@@ -61,12 +66,15 @@ class FirstFragment : Fragment() {
 
                 activity?.runOnUiThread{
                     binding.textViewSummary.text = response
+
+                    binding.layoutQuestion.visibility = View.VISIBLE
                 }
 
             }
 
-
-
+        }
+        binding.buttonQuestion.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
         return binding.root

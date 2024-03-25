@@ -9,7 +9,7 @@ def iterateOverJSON(jsonArray):
     result = ""
     jArray = json.loads(jsonArray)
     for element in jArray:
-        result += element['text'] + " "
+        result += element['text'].replace("\n"," ") + " "
     return result
 def gettranscript(name):
     split_string = name.split("=")

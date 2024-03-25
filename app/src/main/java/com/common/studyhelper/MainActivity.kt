@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private var transcript:String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,12 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    fun setTranscript(transcript:String){
+        this.transcript = transcript
+    }
+    fun getTranscript():String? {
+        return this.transcript
     }
 
     override fun onSupportNavigateUp(): Boolean {
